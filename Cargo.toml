@@ -1,0 +1,13 @@
+[package]
+name = "dynamic-dispatch"
+version = "0.1.0"
+authors = ["Andrea Cracco <guilucand@gmail.com>"]
+edition = "2021"
+categories = []
+description = "Allows compiling generic functions that do not have generic parameters inside a library, specifying all the possible specializations for each generic type"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/Guilucand/dynamic-dispatch-rs"
+
+
+[dependencies]
+dynamic-dispatch-proc-macro = "0.1.0"
