@@ -1,7 +1,7 @@
 use std::any::TypeId;
 use std::marker::PhantomData;
 
-pub use dynamic_dispatch_proc_macro::static_dispatch;
+pub use dynamic_dispatch_proc_macro::dynamic_dispatch;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct StaticDispatch<T: ?Sized + 'static> {

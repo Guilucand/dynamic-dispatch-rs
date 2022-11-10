@@ -182,7 +182,7 @@ fn static_dispatch_fn(args: FunctionSpecializations, function: ItemFn) -> TokenS
             .to_tokens(&mut dispatch_generic_args);
 
             (quote! {
-                <#ident_name as #first_bound>::STATIC_DISPATCH_ID,
+                <#ident_name as #first_bound>::DYNAMIC_DISPATCH_ID,
             })
             .to_tokens(&mut dispatch_tuple_builders);
 
@@ -246,7 +246,7 @@ fn static_dispatch_fn(args: FunctionSpecializations, function: ItemFn) -> TokenS
 
                     quote! {
                         #(#attrs)*
-                        <#path as #first_bound>::STATIC_DISPATCH_ID => #nested,
+                        <#path as #first_bound>::DYNAMIC_DISPATCH_ID => #nested,
                     }
                 }
                 .to_tokens(&mut output_dispatcher);
@@ -308,7 +308,7 @@ fn static_dispatch_fn(args: FunctionSpecializations, function: ItemFn) -> TokenS
 fn static_dispatch_trait(mut trait_: ItemTrait) -> TokenStream {
     trait_
         .items
-        .push(parse_quote! { const STATIC_DISPATCH_ID: ::static_dispatch::StaticDispatch<()>; });
+        .push(parse_quote! { const DYNAMIC_DISPATCH_ID: ::static_dispatch::StaticDispatch<()>; });
 
     trait_.to_token_stream()
 }
@@ -317,7 +317,7 @@ fn static_dispatch_impl(mut impl_: ItemImpl) -> TokenStream {
     impl_.impl_token;
 
     impl_.items.push(parse_quote! {
-        const STATIC_DISPATCH_ID: ::static_dispatch::StaticDispatch::<()> =
+        const DYNAMIC_DISPATCH_ID: ::static_dispatch::StaticDispatch::<()> =
             ::static_dispatch::StaticDispatch::<()> { value: std::any::TypeId::of::<Self>(), _phantom: std::marker::PhantomData };
     });
 
@@ -326,7 +326,7 @@ fn static_dispatch_impl(mut impl_: ItemImpl) -> TokenStream {
 
 #[proc_macro_error]
 #[proc_macro_attribute]
-pub fn static_dispatch(
+pub fn dynamic_dispatch(
     args: proc_macro::TokenStream,
     input: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
@@ -343,7 +343,7 @@ pub fn static_dispatch(
         Item::Impl(impl_) => (TokenStream::new(), static_dispatch_impl(impl_)),
         _ => {
             panic!(
-                "static_dispatch attribute is applicable only to functions, traits or trait impls."
+                "dynamic_dispatch attribute is applicable only to functions, traits or trait impls."
             );
         }
     };
