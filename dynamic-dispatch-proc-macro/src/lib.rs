@@ -187,7 +187,7 @@ fn static_dispatch_fn(args: FunctionSpecializations, function: ItemFn) -> TokenS
             .to_tokens(&mut dispatch_tuple_builders);
 
             (quote! {
-                ::dynamic_dispatch::StaticDispatch<()>,
+                ::dynamic_dispatch::DynamicDispatch<()>,
             })
             .to_tokens(&mut dispatch_tuple_members);
         }
@@ -308,7 +308,7 @@ fn static_dispatch_fn(args: FunctionSpecializations, function: ItemFn) -> TokenS
 fn static_dispatch_trait(mut trait_: ItemTrait) -> TokenStream {
     trait_
         .items
-        .push(parse_quote! { const DYNAMIC_DISPATCH_ID: ::dynamic_dispatch::StaticDispatch<()>; });
+        .push(parse_quote! { const DYNAMIC_DISPATCH_ID: ::dynamic_dispatch::DynamicDispatch<()>; });
 
     trait_.to_token_stream()
 }
@@ -317,8 +317,8 @@ fn static_dispatch_impl(mut impl_: ItemImpl) -> TokenStream {
     impl_.impl_token;
 
     impl_.items.push(parse_quote! {
-        const DYNAMIC_DISPATCH_ID: ::dynamic_dispatch::StaticDispatch::<()> =
-            ::dynamic_dispatch::StaticDispatch::<()> { value: std::any::TypeId::of::<Self>(), _phantom: std::marker::PhantomData };
+        const DYNAMIC_DISPATCH_ID: ::dynamic_dispatch::DynamicDispatch::<()> =
+            ::dynamic_dispatch::DynamicDispatch::<()> { value: std::any::TypeId::of::<Self>(), _phantom: std::marker::PhantomData };
     });
 
     impl_.to_token_stream()
