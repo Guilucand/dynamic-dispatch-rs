@@ -10,4 +10,4 @@ repository = "https://github.com/Guilucand/dynamic-dispatch-rs"
 
 
 [dependencies]
-dynamic-dispatch-proc-macro = "0.4.1"
+dynamic-dispatch-proc-macro = "0.4.2"
