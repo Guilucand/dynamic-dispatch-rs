@@ -212,11 +212,12 @@ fn static_dispatch_fn(args: FunctionSpecializations, function: ItemFn) -> TokenS
         fn_args: &TokenStream,
     ) -> TokenStream {
         if index == generics_list.len() {
-            quote! { #fn_name::<#gen_args>(#fn_args) }
+            quote! { return #fn_name::<#gen_args>(#fn_args); }
         } else {
             let mut output_dispatcher = TokenStream::new();
 
             let is_const = generics_list[index].2.is_some();
+            let tuple_index = syn::Index::from(index);
 
             for (idx, ty) in generics_list[index].1.iter().enumerate() {
                 let attrs = &ty.attrs;
@@ -239,26 +240,26 @@ fn static_dispatch_fn(args: FunctionSpecializations, function: ItemFn) -> TokenS
                 if is_const {
                     quote! {
                         #(#attrs)*
-                        #idx => #nested,
+                        if #idx == dispatch_tuple.#tuple_index {
+                            #nested
+                        }
                     }
                 } else {
                     let first_bound = generics_list[index].4.as_ref().unwrap();
 
                     quote! {
                         #(#attrs)*
-                        <#path as #first_bound>::DYNAMIC_DISPATCH_ID => #nested,
+                        if <#path as #first_bound>::DYNAMIC_DISPATCH_ID == dispatch_tuple.#tuple_index {
+                            #nested
+                        }
                     }
                 }
                 .to_tokens(&mut output_dispatcher);
             }
 
-            let tuple_index = syn::Index::from(index);
-
             quote! {
-                match dispatch_tuple.#tuple_index {
-                    #output_dispatcher
-                    x => panic!("Static dispatch bug, arg {:?}!", x)
-                }
+                #output_dispatcher
+                panic!("Static dispatch bug, arg {:?}!", dispatch_tuple.#tuple_index);
             }
         }
     }
