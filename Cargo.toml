@@ -1,6 +1,6 @@
 [package]
 name = "dynamic-dispatch"
-version = "0.5.3"
+version = "0.5.4"
 authors = ["Andrea Cracco <guilucand@gmail.com>"]
 edition = "2021"
 categories = []
@@ -10,4 +10,4 @@ repository = "https://github.com/Guilucand/dynamic-dispatch-rs"
 
 
 [dependencies]
-dynamic-dispatch-proc-macro = "0.4.2"
+dynamic-dispatch-proc-macro = "0.5.0"
